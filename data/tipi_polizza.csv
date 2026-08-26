@@ -1,0 +1,14 @@
+id_tipo_polizza,nome_prodotto,ramo,massimale,franchigia
+1,Corpi Base,Corpi di veicoli terrestri,15000,500
+2,Corpi Bronze,Corpi di veicoli terrestri,25000,300
+3,Corpi Silver,Corpi di veicoli terrestri,40000,150
+4,Incendio Base,Incendio ed elementi naturali,50000,1000
+5,Incendio Bronze,Incendio ed elementi naturali,100000,500
+6,Incendio Silver,Incendio ed elementi naturali,200000,250
+7,Altri Base,Altri danni ai beni,10000,200
+8,Altri Bronze,Altri danni ai beni,20000,100
+9,RC Base,RC autoveicoli terrestri,1000000,300
+10,RC Bronze,RC autoveicoli terrestri,2000000,150
+11,RC Silver,RC autoveicoli terrestri,6070000,0
+12,RC Base,RC generale,500000,500
+13,RC Bronze,RC generale,1500000,250

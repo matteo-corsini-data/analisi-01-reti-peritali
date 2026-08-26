@@ -7,6 +7,8 @@
 - massimale — importo massimo che la compagnia si impegna a risarcire per un sinistro coperto da quel prodotto
 - franchigia — quota di danno che resta sempre a carico dell'assicurato, sottratta dall'indennizzo prima del pagamento
 
+---
+
 **anagrafica_periti.csv** — Il file contenente i dati anagrafici e professionali dei periti della rete.
 - id_perito
 - nome
@@ -22,6 +24,8 @@
 - pec
 - specializzazione — ambito di perizia prevalente del perito
 
+---
+
 **clienti.csv** — Il file contenente i dati anagrafici dei clienti.
 - id_cliente
 - nome
@@ -32,6 +36,8 @@
 - comune_residenza
 - data_inizio_rapporto — la data della stipulazione della prima polizza
 
+---
+
 **polizze.csv** — Il file contenente i contratti attivi, che collegano ogni cliente al prodotto sottoscritto.
 - id_polizza
 - id_cliente
@@ -39,6 +45,8 @@
 - premio_annuo — importo pagato annualmente dal cliente; calcolato a partire da un premio base di prodotto, corretto da un fattore di rischio legato alla regione del cliente
 - data_decorrenza — periodo di validità del contratto (durata standard: 1 anno)
 - data_scadenza — periodo di validità del contratto (durata standard: 1 anno)
+
+---
 
 **sinistri.csv** — Il file contenente gli eventi denunciati dai clienti, dalla denuncia alla chiusura.
 - id_sinistro
@@ -53,6 +61,8 @@
 - data_offerta — data in cui la compagnia formula l'offerta di risarcimento (termine normato dall'art. 149 del Codice delle Assicurazioni)
 - data_accettazione_danneggiato — data in cui il danneggiato accetta l'offerta ricevuta
 - data_liquidazione — data dell'effettivo pagamento dell'indennizzo (termine normato: entro 15 giorni dall'accettazione)
+
+---
 
 **assegnazioni_perizie.csv** — Il file contenente l'incarico affidato al perito per un determinato sinistro.
 - id_assegnazione

@@ -19,11 +19,28 @@ CREATE VIEW final_polizze AS(			-- Polizze senza clienti o tipi polizza coerenti
 DROP VIEW IF EXISTS final_sinistri;
 
 CREATE VIEW final_sinistri AS(			-- Sinistri con polizze inesistenti vanno rimosse
-	SELECT id_sinistro, s.id_polizza, data_denuncia, tipo_danno, tipo_modulo_cai, regione_sinistro, importo_stimato_perito,
+	SELECT id_sinistro, id_polizza, data_denuncia, tipo_danno, tipo_modulo_cai, regione_sinistro, importo_stimato_perito,
 		importo_indennizzo_liquidato, esito_sinistro, data_offerta, data_accettazione_danneggiato, data_liquidazione
-	FROM cleaned_sinistri AS s
-	INNER JOIN final_polizze as p
-		ON s.id_polizza = p.id_polizza
+	FROM (
+		SELECT 
+			id_sinistro, s.id_polizza, data_denuncia, tipo_danno, tipo_modulo_cai, regione_sinistro, importo_stimato_perito,
+			importo_indennizzo_liquidato, esito_sinistro, data_offerta, data_accettazione_danneggiato, data_liquidazione,
+			CASE 
+            
+				WHEN importo_indennizzo_liquidato > massimale 
+					THEN 'indennizzo maggiore del massimale prestabilito'
+	
+				-- Come già notato si considera la possibilità di avere liquidazioni superiore al valore dettato dal perito e di liquidazioni senza perizia,
+				-- quindi il valore importo_stimato_perito non risulta vincolante per importo_indennizzo_liquidato
+				
+                ELSE ''
+            END as price_error
+        FROM cleaned_sinistri AS s
+		INNER JOIN final_polizze as p
+			ON s.id_polizza = p.id_polizza
+		INNER JOIN final_tipi_polizza as tp
+			ON p.id_tipo_polizza = tp.id_tipo_polizza	) AS tab
+	WHERE price_error = ''
 );
 
 																	-- FINAL ASSEGNAZIONI PERIZIE
@@ -39,13 +56,4 @@ CREATE VIEW final_assegnazioni_perizie AS(			-- Assegnazione Perizie senza sinis
     INNER JOIN final_sinistri AS s
 		ON ap.id_sinistro = s.id_sinistro
 );
-
-
-SELECT * FROM final_anagrafica_periti;
-SELECT * FROM final_assegnazioni_perizie;
-SELECT * FROM final_clienti;
-SELECT * FROM final_polizze;
-SELECT * FROM final_sinistri;
-SELECT * FROM final_tipi_polizza;
-
 

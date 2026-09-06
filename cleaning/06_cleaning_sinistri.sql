@@ -1,10 +1,10 @@
--- Ci si rifà alla tabella di lookup lookup_rami_validi e lookup_regioni: rimando al file 01_lookup_regioni.sql
+-- Ci si rifà alla tabella di lookup lookup_rami_validi e lookup_regioni: rimando al file 01_lookup_tables.sql
 
 DROP VIEW IF EXISTS cleaned_sinistri;
 
 CREATE VIEW cleaned_sinistri AS																			-- Si accetta la possibilità di avere indennizzi senza perizia associata, e quindi senza importo_stimato_perito 
 																										-- e che l'importo_stimato_perito possa essere minore dell'importo_indennizzo_liquidato
-	SELECT id_sinistro, id_polizza, data_denuncia, tipo_danno, tipo_modulo_cai, regione_sinistro, COALESCE(importo_stimato_perito, 0) AS importo_stimato_perito,
+	SELECT id_sinistro, id_polizza, data_denuncia, tipo_danno, tipo_modulo_cai, regione_sinistro, importo_stimato_perito,
 		importo_indennizzo_liquidato, esito_sinistro, data_offerta, data_accettazione_danneggiato, data_liquidazione
     FROM (
 		SELECT  *,
@@ -28,7 +28,13 @@ CREATE VIEW cleaned_sinistri AS																			-- Si accetta la possibilità 
 				WHEN (tipo_modulo_cai != '' AND tipo_danno != 'RC autoveicoli terrestri') OR 
 					(tipo_modulo_cai NOT IN ('congiunto', 'unilaterale') AND tipo_danno = 'RC autoveicoli terrestri')
 					THEN 'tipo_modulo_cai errato'		-- Controllo tipo_modulo_cai 
-					
+				
+                WHEN importo_stimato_perito < 0
+					THEN 'importo_stimato_perito errato'		-- Controllo sull'importo stimato perito
+	
+				WHEN importo_indennizzo_liquidato < 0
+					THEN 'importo_indennizzo_liquidato errato'		-- Controllo sull'importo indennizzo liquidato
+                    
 				ELSE ''
 			END as value_error,
 
@@ -63,12 +69,18 @@ CREATE VIEW cleaned_sinistri AS																			-- Si accetta la possibilità 
 				ELSE ''
 					
 			END as data_error, 
-			CASE										-- Controllo sugli importi
-				WHEN (esito_sinistro != 'liquidato' AND importo_indennizzo_liquidato != '') OR
-					(esito_sinistro = 'liquidato' AND importo_indennizzo_liquidato = '') 
-						THEN 'errore indennizzo liquidato in funzione di esito_sinistro'
+            
+			CASE			-- Controllo sugli importi
+				
+                WHEN importo_stimato_perito < 0 OR importo_indennizzo_liquidato < 0 
+					THEN 'errore importi negativi' 
+                    
+				WHEN (esito_sinistro != 'liquidato' AND importo_indennizzo_liquidato != 0) 
+					THEN 'errore indennizzo liquidato in funzione di esito_sinistro'
+                    
 				ELSE ''
 			END as price_error 	
 			
 		FROM sinistri) AS s
 	WHERE value_error = '' AND data_error = '' AND price_error = '';
+    

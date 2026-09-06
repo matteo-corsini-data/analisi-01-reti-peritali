@@ -10,7 +10,7 @@ JOIN (
 ) p ON c.id_cliente = p.id_cliente
 SET c.data_inizio_rapporto = p.prima_polizza;
 
--- Ci si rifà alla tabella di lookup lookup_regioni: rimando al file 01_lookup_regioni.sql
+-- Ci si rifà alla tabella di lookup lookup_regioni: rimando al file 01_lookup_tables.sql
 
 DROP VIEW IF EXISTS final_clienti;
 

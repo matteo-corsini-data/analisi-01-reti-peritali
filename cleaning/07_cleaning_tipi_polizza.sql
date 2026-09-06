@@ -1,4 +1,4 @@
--- Ci si rifà alla tabella di lookup lookup_rami_validi: rimando al file lookup_tables.sql
+-- Ci si rifà alla tabella di lookup lookup_rami_validi: rimando al file 01_lookup_regioni.sql
 
 DROP VIEW IF EXISTS final_tipi_polizza;
 

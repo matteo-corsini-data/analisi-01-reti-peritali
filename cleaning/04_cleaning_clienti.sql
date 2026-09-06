@@ -10,7 +10,7 @@ JOIN (
 ) p ON c.id_cliente = p.id_cliente
 SET c.data_inizio_rapporto = p.prima_polizza;
 
--- Ci si rifà alla tabella di lookup lookup_regioni: rimando al file lookup_regioni.sql
+-- Ci si rifà alla tabella di lookup lookup_regioni: rimando al file 01_lookup_regioni.sql
 
 DROP VIEW IF EXISTS final_clienti;
 
@@ -32,7 +32,7 @@ CREATE VIEW final_clienti AS
 				WHEN NOT (	codice_fiscale REGEXP '^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$'	)
 					THEN 'errore codice fiscale'		-- Controllo codice fiscale
 					
-				WHEN DATEDIFF(data_inizio_rapporto, data_nascita) <18  
+				WHEN TIMESTAMPDIFF(YEAR, data_nascita, data_iscrizione) < 18 
 					THEN 'età inferiore a 18 anni'		-- Controllo date
 					
 				WHEN regione_residenza NOT IN (SELECT regione FROM lookup_regioni)

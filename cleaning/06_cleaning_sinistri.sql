@@ -4,8 +4,18 @@ DROP VIEW IF EXISTS cleaned_sinistri;
 
 CREATE VIEW cleaned_sinistri AS																			-- Si accetta la possibilità di avere indennizzi senza perizia associata, e quindi senza importo_stimato_perito 
 																										-- e che l'importo_stimato_perito possa essere minore dell'importo_indennizzo_liquidato
-	SELECT id_sinistro, id_polizza, data_denuncia, tipo_danno, tipo_modulo_cai, regione_sinistro, importo_stimato_perito,
-		importo_indennizzo_liquidato, esito_sinistro, data_offerta, data_accettazione_danneggiato, data_liquidazione
+	SELECT id_sinistro, 
+		id_polizza, 
+        data_denuncia,
+        TRIM(tipo_danno) AS tipo_danno,
+        TRIM(tipo_modulo_cai) AS tipo_modulo_cai,
+        TRIM(regione_sinistro) AS regione_sinistro,
+        importo_stimato_perito,
+		importo_indennizzo_liquidato, 
+        TRIM(esito_sinistro) AS esito_sinistro, 
+        data_offerta,
+        data_accettazione_danneggiato,
+        data_liquidazione
     FROM (
 		SELECT  *,
 			CASE										-- Controllo sull'esistenza e correttezza dei valori id_polizza, tipo_danno
@@ -14,19 +24,19 @@ CREATE VIEW cleaned_sinistri AS																			-- Si accetta la possibilità 
 					tipo_danno IS NULL
 						THEN 'dati mancanti'	
 						
-				WHEN tipo_danno NOT IN (SELECT ramo FROM lookup_rami_validi) 
+				WHEN TRIM(tipo_danno) NOT IN (SELECT ramo FROM lookup_rami_validi) 
 					THEN 'ramo non coperto'		-- Controllo tipo_danno
 				
-				WHEN regione_sinistro NOT IN (SELECT regione FROM lookup_regioni) 
+				WHEN TRIM(regione_sinistro) NOT IN (SELECT regione FROM lookup_regioni) 
 					THEN 'regione non esistente'		-- Controllo regione_sinistro
 				
 				WHEN esito_sinistro IS NULL 
 					THEN 'esito_sinistro mancante'		-- Controllo esito_sinistro
-				WHEN esito_sinistro NOT IN ( 'aperto', 'liquidato', 'respinto', 'in_contenzioso') 
+				WHEN TRIM(esito_sinistro) NOT IN ( 'aperto', 'liquidato', 'respinto', 'in_contenzioso') 
 					THEN 'esito_sinistro errato'	
 					
-				WHEN (tipo_modulo_cai != '' AND tipo_danno != 'RC autoveicoli terrestri') OR 
-					(tipo_modulo_cai NOT IN ('congiunto', 'unilaterale') AND tipo_danno = 'RC autoveicoli terrestri')
+				WHEN (tipo_modulo_cai != '' AND TRIM(tipo_danno) != 'RC autoveicoli terrestri') OR 
+					(TRIM(tipo_modulo_cai) NOT IN ('congiunto', 'unilaterale') AND TRIM(tipo_danno) = 'RC autoveicoli terrestri')
 					THEN 'tipo_modulo_cai errato'		-- Controllo tipo_modulo_cai 
 				
                 WHEN importo_stimato_perito < 0
@@ -54,16 +64,16 @@ CREATE VIEW cleaned_sinistri AS																			-- Si accetta la possibilità 
 				
 														-- Controlli logici delle date 
 				
-				WHEN (esito_sinistro = 'in_contenzioso' AND 
+				WHEN (TRIM(esito_sinistro) = 'in_contenzioso' AND 
 						data_denuncia > data_offerta) OR
-					(esito_sinistro = 'liquidato' AND 
+					(TRIM(esito_sinistro) = 'liquidato' AND 
 						(data_denuncia > data_offerta OR 
 						data_offerta > data_accettazione_danneggiato OR
 						DATEDIFF(data_liquidazione, data_accettazione_danneggiato) NOT BETWEEN 0 AND 15)) 
 					THEN 'errore gestione delle date'
 				
-				WHEN (tipo_modulo_cai = 'congiunto' AND DATEDIFF(data_offerta, data_denuncia) > 30) OR
-					(tipo_modulo_cai = 'unilaterale' AND DATEDIFF(data_offerta, data_denuncia) > 60)
+				WHEN (TRIM(tipo_modulo_cai) = 'congiunto' AND DATEDIFF(data_offerta, data_denuncia) > 30) OR
+					(TRIM(tipo_modulo_cai) = 'unilaterale' AND DATEDIFF(data_offerta, data_denuncia) > 60)
 					THEN 'errore gestione modello cai'		-- Gestione logica del tipo_modello_cai
 					
 				ELSE ''
@@ -75,7 +85,7 @@ CREATE VIEW cleaned_sinistri AS																			-- Si accetta la possibilità 
                 WHEN importo_stimato_perito < 0 OR importo_indennizzo_liquidato < 0 
 					THEN 'errore importi negativi' 
                     
-				WHEN (esito_sinistro != 'liquidato' AND importo_indennizzo_liquidato != 0) 
+				WHEN (TRIM(esito_sinistro) != 'liquidato' AND importo_indennizzo_liquidato != 0) 
 					THEN 'errore indennizzo liquidato in funzione di esito_sinistro'
                     
 				ELSE ''
@@ -83,4 +93,5 @@ CREATE VIEW cleaned_sinistri AS																			-- Si accetta la possibilità 
 			
 		FROM sinistri) AS s
 	WHERE value_error = '' AND data_error = '' AND price_error = '';
+    
     

@@ -3,7 +3,12 @@
 DROP VIEW IF EXISTS cleaned_polizze;
 
 CREATE VIEW cleaned_polizze AS 
-	SELECT id_polizza, id_cliente, id_tipo_polizza, premio_annuo, data_decorrenza, data_scadenza
+	SELECT id_polizza,
+		id_cliente, 
+		id_tipo_polizza,
+		premio_annuo, 
+		data_decorrenza, 
+		data_scadenza
     FROM(
 		SELECT *,
 			CASE  										-- Controllo sull'esistenza dei dati

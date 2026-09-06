@@ -3,7 +3,12 @@
 DROP VIEW IF EXISTS cleaned_assegnazioni_perizie;
 
 CREATE VIEW cleaned_assegnazioni_perizie AS 
-	SELECT id_assegnazione, id_sinistro, id_perito, data_assegnazione, data_sopralluogo, compenso_perito
+	SELECT id_assegnazione,
+		id_sinistro, 
+		id_perito, 
+		data_assegnazione, 
+		data_sopralluogo, 
+		compenso_perito
     FROM (
 		SELECT *, 
 			CASE  										-- Controllo sull'esistenza dei dati

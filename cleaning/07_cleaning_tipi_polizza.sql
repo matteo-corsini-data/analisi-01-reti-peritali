@@ -3,7 +3,12 @@
 DROP VIEW IF EXISTS final_tipi_polizza;
 
 CREATE VIEW final_tipi_polizza AS
-	SELECT id_tipo_polizza, nome_prodotto, ramo, massimale, franchigia
+	SELECT 
+		id_tipo_polizza, 
+        TRIM(nome_prodotto) AS nome_prodotto, 
+        TRIM(ramo) AS ramo, 
+        massimale,
+        franchigia
     FROM (
 		SELECT *,
 			CASE   										-- Controllo sull'esistenza dei dati
@@ -15,7 +20,7 @@ CREATE VIEW final_tipi_polizza AS
 			END as value_error,	
 						
 			CASE   										-- Controllo sulla logica dei dati
-				WHEN ramo NOT IN (SELECT ramo FROM lookup_rami_validi) 
+				WHEN TRIM(ramo) NOT IN (SELECT ramo FROM lookup_rami_validi) 
 					THEN 'ramo non coperto'		-- Controllo ramo
                     
 				WHEN massimale <= franchigia 

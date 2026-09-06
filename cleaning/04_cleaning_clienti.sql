@@ -15,7 +15,15 @@ SET c.data_inizio_rapporto = p.prima_polizza;
 DROP VIEW IF EXISTS final_clienti;
 
 CREATE VIEW final_clienti AS 
-	SELECT id_cliente, nome, cognome, codice_fiscale, data_nascita, regione_residenza, comune_residenza, data_inizio_rapporto
+	SELECT 
+		id_cliente, 
+		TRIM(nome) AS nome, 
+		TRIM(cognome) AS cognome, 
+		TRIM(codice_fiscale) AS codice_fiscale, 
+		data_nascita, 
+		TRIM(regione_residenza) AS regione_residenza, 
+		TRIM(comune_residenza) AS comune_residenza,
+		data_inizio_rapporto
     FROM(
 		SELECT *,
 			CASE  										-- Controllo sull'esistenza dei dati
@@ -29,13 +37,13 @@ CREATE VIEW final_clienti AS
 			END as value_error,
 			
 			CASE  										-- Controllo sulla logica dei dati
-				WHEN NOT (	codice_fiscale REGEXP '^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$'	)
+				WHEN NOT (	TRIM(codice_fiscale) REGEXP '^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$'	)
 					THEN 'errore codice fiscale'		-- Controllo codice fiscale
 					
-				WHEN TIMESTAMPDIFF(YEAR, data_nascita, data_iscrizione) < 18 
+				WHEN TIMESTAMPDIFF(YEAR, data_nascita, data_inizio_rapporto) < 18 
 					THEN 'età inferiore a 18 anni'		-- Controllo date
 					
-				WHEN regione_residenza NOT IN (SELECT regione FROM lookup_regioni)
+				WHEN TRIM(regione_residenza) NOT IN (SELECT regione FROM lookup_regioni)
 					THEN 'regione residenza in regione non esistente' 		-- Controllo residenza
 					
 				ELSE ''

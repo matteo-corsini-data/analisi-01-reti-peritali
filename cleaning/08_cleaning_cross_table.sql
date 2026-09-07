@@ -1,4 +1,4 @@
--- Sì accetta la possibilità che esistano Clienti, Tipi Polizza e Periti senza Polizze Sinistri o Assegnazioni Perizie associate
+-- Si accetta la possibilità che esistano Clienti, Tipi Polizza e Periti senza Polizze Sinistri o Assegnazioni Perizie associate
 
 
 																	-- FINAL POLIZZE

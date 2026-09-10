@@ -50,15 +50,15 @@ CREATE VIEW cleaned_sinistri AS																			-- Si accetta la possibilità 
 
 			CASE 										-- Controllo di validità delle date 
 
-				WHEN data_denuncia IS NULL  
+				WHEN data_denuncia IS NULL
 					THEN 'data_denuncia mancante'
-				WHEN data_offerta IS NULL  AND 
+				WHEN data_offerta IS NULL AND 
 					esito_sinistro IN  ('liquidato', 'in_contenzioso') 
 						THEN 'data_offerta mancante'
 				WHEN data_accettazione_danneggiato IS NULL AND 
 					esito_sinistro IN  ('liquidato') 
 						THEN 'data_accettazione_danneggiato mancante'
-				WHEN data_liquidazione IS NULL  AND 
+				WHEN data_liquidazione IS NULL AND 
 					esito_sinistro IN  ('liquidato') 
 						THEN 'data_liquidazione mancante'
 				
@@ -93,5 +93,3 @@ CREATE VIEW cleaned_sinistri AS																			-- Si accetta la possibilità 
 			
 		FROM sinistri) AS s
 	WHERE value_error = '' AND data_error = '' AND price_error = '';
-    
-    

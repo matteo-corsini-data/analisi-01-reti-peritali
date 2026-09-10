@@ -12,9 +12,9 @@ SET c.data_inizio_rapporto = p.prima_polizza;
 
 -- Ci si rifà alla tabella di lookup lookup_regioni: rimando al file 01_lookup_tables.sql
 
-DROP VIEW IF EXISTS final_clienti;
+DROP VIEW IF EXISTS view_final_clienti;
 
-CREATE VIEW final_clienti AS 
+CREATE VIEW view_final_clienti AS 
 	SELECT 
 		id_cliente, 
 		TRIM(nome) AS nome, 
@@ -50,3 +50,4 @@ CREATE VIEW final_clienti AS
 			END as logic_error
 		FROM clienti) as cl
 	WHERE value_error = '' AND logic_error = '';
+    

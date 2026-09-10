@@ -1,8 +1,8 @@
 -- Ci si rifà alla tabella di lookup lookup_rami_validi: rimando al file 01_lookup_tables.sql
 
-DROP VIEW IF EXISTS final_tipi_polizza;
+DROP VIEW IF EXISTS view_final_tipi_polizza;
 
-CREATE VIEW final_tipi_polizza AS
+CREATE VIEW view_final_tipi_polizza AS
 	SELECT 
 		id_tipo_polizza, 
         TRIM(nome_prodotto) AS nome_prodotto, 

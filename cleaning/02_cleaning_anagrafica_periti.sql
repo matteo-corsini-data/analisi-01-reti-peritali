@@ -1,8 +1,8 @@
 -- Ci si rifà alla tabella di lookup lookup_rami_validi: rimando al file 01_lookup_tables.sql
 
-DROP VIEW IF EXISTS final_anagrafica_periti;
+DROP VIEW IF EXISTS view_final_anagrafica_periti;
 
-CREATE VIEW final_anagrafica_periti AS 
+CREATE VIEW view_final_anagrafica_periti AS 
 	SELECT id_perito, 
 		TRIM(nome) AS nome, 
         TRIM(cognome) AS cognome, 

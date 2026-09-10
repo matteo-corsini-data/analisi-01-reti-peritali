@@ -1,7 +1,7 @@
 -- Creazione delle tabelle caricando i dati dei file .csv
 
 SET GLOBAL local_infile=1;
-
+SET SQL_SAFE_UPDATES = 0;
 																					-- ============================================
 																					-- ANAGRAFICA PERITI
 																					-- ============================================
@@ -32,6 +32,9 @@ IGNORE 1 ROWS;
 
 SHOW WARNINGS;
 
+UPDATE anagrafica_periti SET data_nascita = NULL WHERE CAST(data_nascita AS CHAR) = '0000-00-00';
+UPDATE anagrafica_periti SET data_iscrizione = NULL WHERE CAST(data_iscrizione AS CHAR) = '0000-00-00';
+
 																					-- ============================================
 																					-- ASSEGNAZIONI PERIZIE
 																					-- ============================================
@@ -54,6 +57,9 @@ LINES TERMINATED BY '\r\n'
 IGNORE 1 ROWS;
 
 SHOW WARNINGS;
+
+UPDATE assegnazioni_perizie SET data_assegnazione = NULL WHERE CAST(data_assegnazione AS CHAR) = '0000-00-00';
+UPDATE assegnazioni_perizie SET data_sopralluogo = NULL WHERE CAST(data_sopralluogo AS CHAR) = '0000-00-00';
 
 																					-- ============================================
 																					-- CLIENTI
@@ -80,6 +86,9 @@ IGNORE 1 ROWS;
 
 SHOW WARNINGS;
 
+UPDATE clienti SET data_nascita = NULL WHERE CAST(data_nascita AS CHAR) = '0000-00-00';
+UPDATE clienti SET data_inizio_rapporto = NULL WHERE CAST(data_inizio_rapporto AS CHAR) = '0000-00-00';
+
 																					-- ============================================
 																					-- POLIZZE
 																					-- ============================================
@@ -102,6 +111,9 @@ LINES TERMINATED BY '\r\n'
 IGNORE 1 ROWS;
 
 SHOW WARNINGS;
+
+UPDATE polizze SET data_decorrenza = NULL WHERE CAST(data_decorrenza AS CHAR) = '0000-00-00';
+UPDATE polizze SET data_scadenza = NULL WHERE CAST(data_scadenza AS CHAR) = '0000-00-00';
 
 																					-- ============================================
 																					-- SINISTRI
@@ -132,6 +144,12 @@ IGNORE 1 ROWS;
 
 SHOW WARNINGS;
 
+UPDATE sinistri SET data_denuncia = NULL WHERE CAST(data_denuncia AS CHAR) = '0000-00-00';
+UPDATE sinistri SET data_offerta = NULL WHERE CAST(data_offerta AS CHAR) = '0000-00-00';
+UPDATE sinistri SET data_accettazione_danneggiato = NULL WHERE CAST(data_accettazione_danneggiato AS CHAR) = '0000-00-00';
+UPDATE sinistri SET data_liquidazione = NULL WHERE CAST(data_liquidazione AS CHAR) = '0000-00-00';
+
+
 																					-- ============================================
 																					-- TIPI POLIZZA
 																					-- ============================================
@@ -153,3 +171,5 @@ LINES TERMINATED BY '\r\n'
 IGNORE 1 ROWS;
 
 SHOW WARNINGS;
+
+SET SQL_SAFE_UPDATES = 1;
